@@ -1,0 +1,164 @@
+version: '3'
+
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge
+
+services:
+### Workspace Utilities ##################################
+  workspace:
+    image: registry.cn-beijing.aliyuncs.com/fanybook/workspace
+    restart: always
+    environment:
+      - SSH_ROOT_PWD=mydock123!@#
+    volumes:
+      - /data/www:/var/www
+      - ./workspace/crontab/www-data:/etc/crontabs/www-data
+    ports:
+      - "2222:22"
+    networks:
+      - frontend
+      - backend
+
+  workspace-pm2:
+    image: registry.cn-beijing.aliyuncs.com/fanybook/workspace-pm2
+    restart: always
+    environment:
+      - SSH_ROOT_PWD=mydock123!@#
+    volumes:
+      - /data/www:/var/www
+      - ./workspace-pm2/crontab/www-data:/etc/crontabs/www-data
+      - ./workspace-pm2/conf/pm2process.yml:/etc/pm2/pm2process.yml
+    ports:
+      - "2222:22"
+    networks:
+      - frontend
+      - backend
+
+
+### PHP-FPM ##############################################
+  php-fpm:
+    image: registry.cn-beijing.aliyuncs.com/fanybook/php-fpm
+    restart: always
+    volumes:
+      - /data/www:/var/www
+    depends_on:
+      - workspace
+    networks:
+      - backend
+
+
+### PHP-Worker ##############################################
+  php-worker:
+    image: registry.cn-beijing.aliyuncs.com/fanybook/php-worker
+    restart: always
+    environment:
+      - SSH_ROOT_PWD=mydock123!@#
+    volumes:
+      - /data/www:/var/www
+      - /data/logs/pm2:/home/www-data/.pm2/logs
+      - ./php-worker/conf/pm2process.yml:/etc/pm2/pm2process.yml
+    ports:
+      - "2223:22"
+    networks:
+      - frontend
+      - backend
+
+
+### Mysql ##############################################
+  # mysql:
+  #   image: mysql:5.7
+  #   restart: always
+  #   environment:
+  #     - MYSQL_ROOT_PASSWORD=mydock123!@#
+  #   volumes:
+  #     - /data/.mydock/mysql:/var/lib/mysql
+  #   networks:
+  #     - backend
+
+  mariadb:
+    image: registry.cn-beijing.aliyuncs.com/fanybook/mariadb
+    restart: always
+    environment:
+      - MYSQL_ROOT_PWD=mydock123!@#
+    ports:
+      - "3306:3306"
+    volumes:
+      - /data/.mydock/mariadb:/var/lib/mysql
+    networks:
+      - backend
+
+### Pgsql ##############################################
+  postgres:
+    image: registry.cn-beijing.aliyuncs.com/fanybook/postgres
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=mydock123!@#
+    ports:
+      - "5432:5432"
+    volumes:
+      - /data/.mydock/postgres:/var/lib/postgresql/data
+    networks:
+      - backend
+
+### Redis ################################################
+  redis:
+    image: registry.cn-beijing.aliyuncs.com/fanybook/redis
+    restart: always
+    environment:
+      - REDIS_PASSWORD=mydock123!@#
+    volumes:
+      - /data/.mydock/redis:/data
+      - ./redis/conf:/etc/redis
+    ports:
+      - "6379:6379"
+    networks:
+      - backend
+
+
+### ElasticSearch ################################################
+  elasticsearch:
+    image: blacktop/elasticsearch:6.4.0
+    restart: always
+    environment:
+      - ES_JAVA_OPTS=-Xms2g -Xmx2g
+    volumes:
+      - /data/.mydock/elasticsearch:/usr/share/elasticsearch/data
+      - /data/logs/elasticsearch:/usr/share/elasticsearch/logs
+      - ./elasticsearch/conf:/usr/share/elasticsearch/config
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+      - backend
+
+
+### Caddy Server #########################################
+  caddy:
+    image: registry.cn-beijing.aliyuncs.com/fanybook/caddy
+    restart: always
+    volumes:
+      - /data/www:/var/www
+      - /data/logs/caddy:/var/log/caddy
+      - /data/.mydock/caddy:/root/.caddy
+      - ./caddy/conf:/etc/caddy
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - php-fpm
+    networks:
+      - frontend
+      - backend
+
+
+### Certbot ##############################################
+  certbot:
+    image: registry.cn-beijing.aliyuncs.com/fanybook/certbot
+    volumes:
+      - ./certbot/letsencrypt/:/var/www/letsencrypt
+    tty: true
+    networks:
+      - frontend
