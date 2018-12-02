@@ -1,0 +1,1 @@
+* * * * * php /var/www/gutfan.com/web/artisan schedule:run >> /dev/null 2>&1

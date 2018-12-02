@@ -1,0 +1,6 @@
+* * * * * echo 00 > /data/test_cron.txt
+* * * * * sleep 10; echo 10 > /data/test_cron.txt
+* * * * * sleep 20; echo 20 > /data/test_cron.txt
+* * * * * sleep 30; echo 30 > /data/test_cron.txt
+* * * * * sleep 40; echo 40 > /data/test_cron.txt
+* * * * * sleep 50; echo 50 > /data/test_cron.txt
