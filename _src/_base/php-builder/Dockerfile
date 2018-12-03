@@ -14,7 +14,7 @@ RUN if [ ${CHANGE_ALPINE_SOURCE} = true ]; then \
 RUN apk update \
     && apk upgrade \
     # base
-    && apk add --no-cache build-base git \
+    && apk add --no-cache build-base autoconf git \
     # glibc
     && wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.28-r0/glibc-2.28-r0.apk \
     && wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.28-r0/glibc-bin-2.28-r0.apk \
