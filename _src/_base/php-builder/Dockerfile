@@ -13,7 +13,15 @@ RUN if [ ${CHANGE_ALPINE_SOURCE} = true ]; then \
 # dep libpng when php start with gd
 RUN apk update \
     && apk upgrade \
+    # base
     && apk add --no-cache build-base git \
+    # glibc
+    && wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.28-r0/glibc-2.28-r0.apk \
+    && wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.28-r0/glibc-bin-2.28-r0.apk \
+    && apk add glibc-2.28-r0.apk --allow-untrusted \
+    && apk add glibc-bin-2.28-r0.apk  --allow-untrusted \
+    && rm -f glibc-2.28-r0.apk \
+    && rm -f glibc-bin-2.28-r0.apk \
     # swoole
     && docker-php-ext-install -j$(nproc) sockets
     && apk add --no-cache nghttp2-dev postgresql-dev libpq-dev openssh \
