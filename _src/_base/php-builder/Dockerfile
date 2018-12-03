@@ -10,7 +10,6 @@ RUN if [ ${CHANGE_ALPINE_SOURCE} = true ]; then \
     sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/' /etc/apk/repositories \
 ;fi
 
-# dep libpng when php start with gd
 RUN apk update \
     && apk upgrade \
     # base
@@ -19,7 +18,7 @@ RUN apk update \
     && wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.28-r0/glibc-2.28-r0.apk \
     && wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.28-r0/glibc-bin-2.28-r0.apk \
     && apk add glibc-2.28-r0.apk --allow-untrusted \
-    && apk add glibc-bin-2.28-r0.apk  --allow-untrusted \
+    && apk add glibc-bin-2.28-r0.apk --allow-untrusted \
     && rm -f glibc-2.28-r0.apk \
     && rm -f glibc-bin-2.28-r0.apk \
     # swoole
