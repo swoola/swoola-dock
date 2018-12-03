@@ -34,6 +34,9 @@ RUN apk update \
     && make -j$(nproc) \
     && make install \
     && docker-php-ext-enable swoole \
+    && cd .. \
+    && cd rm -rf swoole-src-4.2.9 \
+    && cd rm -f v4.2.9.tar.gz \
     # gd
     && apk add --no-cache libpng-dev libjpeg-turbo-dev libwebp-dev freetype-dev \
     && docker-php-ext-configure gd --with-jpeg-dir=/usr/include/ --with-webp-dir=/usr/include/ --with-freetype-dir=/usr/include/ \
@@ -43,6 +46,8 @@ RUN apk update \
     && docker-php-ext-install -j$(nproc) mcrypt \
     # bcmath
     && docker-php-ext-install -j$(nproc) bcmath \
+    # mysqli
+    && docker-php-ext-install -j$(nproc) mysqli \
     # pdo_mysql
     && docker-php-ext-install -j$(nproc) pdo_mysql \
     # pdo_pgsql
