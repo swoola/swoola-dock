@@ -27,7 +27,7 @@ RUN apk update \
     && apk add --no-cache nghttp2-dev postgresql-dev libpq-dev openssh \
     && wget https://github.com/swoole/swoole-src/archive/v4.2.9.tar.gz \
     && tar -xzvf v4.2.9.tar.gz \
-    && cd swoole-src-4.2.9 && \
+    && cd swoole-src-4.2.9 \
     && phpize \
     # && ./configure --enable-debug-log --enable-sockets --enable-openssl --enable-http2 --enable-mysqlnd --enable-coroutine-postgresql \
     && ./configure --enable-sockets --enable-openssl --enable-http2 --enable-mysqlnd --enable-coroutine-postgresql \
