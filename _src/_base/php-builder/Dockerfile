@@ -23,7 +23,7 @@ RUN apk update \
     && rm -f glibc-2.28-r0.apk \
     && rm -f glibc-bin-2.28-r0.apk \
     # swoole
-    && docker-php-ext-install -j$(nproc) sockets
+    && docker-php-ext-install -j$(nproc) sockets \
     && apk add --no-cache nghttp2-dev postgresql-dev libpq-dev openssh \
     && wget https://github.com/swoole/swoole-src/archive/v4.2.9.tar.gz \
     && tar -xzvf v4.2.9.tar.gz \
