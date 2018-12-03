@@ -3,7 +3,7 @@ FROM registry.cn-beijing.aliyuncs.com/fanybook/caddy-builder AS builder
 # ARG plugins="git"
 # RUN caddyplug install ${plugins}
 
-FROM alpine:3.7
+FROM alpine:3.8
 
 LABEL maintainer="Fanybook <fanybook@126.com>"
 
